@@ -12,12 +12,22 @@ function App() {
   const [localBodies, setLocalBodies] = useState<LocalBody[]>([]);
   const [wards, setWards] = useState<Ward[]>([]);
   const [pollingStations, setPollingStations] = useState<PollingStation[]>([]);
-  const [counts, setCounts] = useState({
+  const [counts, setCounts] = useState<{
+    corporations: number;
+    municipalities: number;
+    gramaPanchayats: number;
+    blockPanchayats: number;
+    districtPanchayats: number;
+    voters: number;
+    pollingStations: number;
+  }>({
     corporations: 0,
     municipalities: 0,
     gramaPanchayats: 0,
     blockPanchayats: 0,
     districtPanchayats: 0,
+    voters: 0,
+    pollingStations: 0,
   });
   const [selectedKPI, setSelectedKPI] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
