@@ -57,23 +57,45 @@ export const DistrictTable: React.FC<DistrictTableProps> = ({
                 kpiCount = districtLBs.length;
             }
 
-            // Use filtered LBs to calculate voters and stations
-            // We should ONLY sum voters/stations for base tiers (Corp, Mun, GP) to avoid double counting
+            // Calculate voters and stations based on selection
+            let voters = 0;
+            let stations = 0;
 
-            // Let's define base types.
-            const baseTypes = ['Municipal Corporation', 'Municipality', 'Grama Panchayat'];
+            if (selectedKPI && !['voters', 'pollingStations'].includes(selectedKPI)) {
+                // Specific Local Body Type Selected
+                const targetLBCodes = new Set(filteredLBs.map(lb => lb.lb_code));
 
-            // For the "Total Voters" column, we should always use the base types in the district.
-            const baseLBsInDistrict = districtLBs.filter(lb => baseTypes.includes(lb.lb_type));
-            const baseLBCodes = new Set(baseLBsInDistrict.map(lb => lb.lb_code));
+                // Voters: Sum wards for the selected LBs
+                voters = wards
+                    .filter(w => targetLBCodes.has(w.lb_code))
+                    .reduce((acc, curr) => acc + curr.total_voters, 0);
 
-            const voters = wards
-                .filter(w => baseLBCodes.has(w.lb_code))
-                .reduce((acc, curr) => acc + curr.total_voters, 0);
+                // Stations:
+                if (selectedKPI === 'districtPanchayats') {
+                    // For District Panchayat, sum stations of all Grama Panchayats in the district
+                    const districtGPs = districtLBs.filter(lb => lb.lb_type === 'Grama Panchayat');
+                    const districtGPCodes = new Set(districtGPs.map(lb => lb.lb_code));
+                    stations = pollingStations.filter(ps => districtGPCodes.has(ps.lb_code)).length;
+                } else {
+                    // For others (Corp, Mun, GP, BP), count direct matches
+                    // We verified BP and Mun have direct entries in polling_stations.csv
+                    stations = pollingStations.filter(ps => targetLBCodes.has(ps.lb_code)).length;
+                }
 
-            const stations = pollingStations
-                .filter(ps => baseLBCodes.has(ps.lb_code))
-                .length;
+            } else {
+                // Default / Overview: Show District Totals (Base Types Only)
+                const baseTypes = ['Municipal Corporation', 'Municipality', 'Grama Panchayat'];
+                const baseLBsInDistrict = districtLBs.filter(lb => baseTypes.includes(lb.lb_type));
+                const baseLBCodes = new Set(baseLBsInDistrict.map(lb => lb.lb_code));
+
+                voters = wards
+                    .filter(w => baseLBCodes.has(w.lb_code))
+                    .reduce((acc, curr) => acc + curr.total_voters, 0);
+
+                stations = pollingStations
+                    .filter(ps => baseLBCodes.has(ps.lb_code))
+                    .length;
+            }
 
             return {
                 district,
