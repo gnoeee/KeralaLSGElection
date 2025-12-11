@@ -14,6 +14,9 @@ export interface Ward {
     ward_no: number;
     lb_code: string;
     total_voters: number;
+    male_voters: number;
+    female_voters: number;
+    other_voters: number;
 }
 
 export interface PollingStation {
@@ -68,6 +71,9 @@ export const fetchWards = async (): Promise<Ward[]> => {
                         ward_no: parseInt(row['Ward Code'].slice(-3), 10),
                         lb_code: row['Local Body Code'],
                         total_voters: parseInt(row['Total'] || '0', 10),
+                        male_voters: parseInt(row['Males'] || '0', 10),
+                        female_voters: parseInt(row['Females'] || '0', 10),
+                        other_voters: parseInt(row['Others'] || '0', 10),
                     }));
                 resolve(wards);
             },

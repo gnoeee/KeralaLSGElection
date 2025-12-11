@@ -64,22 +64,58 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({ localBody, onBack, war
                         </span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2 md:gap-4">
-                        <div className="p-3 md:p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-                                <div className="hidden md:block p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <div className="grid grid-cols-2 gap-2 md:gap-4">
+                        {/* Voters Card - Spans 2 Rows */}
+                        <div className="row-span-2 p-3 md:p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                            <div className="flex items-start gap-3 md:gap-4 mb-4">
+                                <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl shrink-0">
                                     <Vote size={24} />
                                 </div>
                                 <div>
                                     <p className="text-xs md:text-sm font-medium text-slate-500 mb-1">Total Voters</p>
-                                    <p className="text-lg md:text-2xl font-bold text-slate-900">{totalVoters.toLocaleString()}</p>
+                                    <p className="text-2xl md:text-3xl font-bold text-slate-900">{totalVoters.toLocaleString()}</p>
+                                </div>
+                            </div>
+
+                            {/* Gender Split - Pushed to bottom / Expanded */}
+                            <div className="mt-auto pt-4 border-t border-slate-100">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <div className="h-2 flex-1 rounded-full bg-slate-100 overflow-hidden flex">
+                                        <div className="bg-blue-500 h-full" style={{ width: `${(lbWards.reduce((acc, curr) => acc + (curr.male_voters || 0), 0) / totalVoters) * 100}%` }} />
+                                        <div className="bg-pink-500 h-full" style={{ width: `${(lbWards.reduce((acc, curr) => acc + (curr.female_voters || 0), 0) / totalVoters) * 100}%` }} />
+                                        <div className="bg-slate-400 h-full" style={{ width: `${(lbWards.reduce((acc, curr) => acc + (curr.other_voters || 0), 0) / totalVoters) * 100}%` }} />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-center text-xs text-slate-600">
+                                        <span className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                            Male
+                                        </span>
+                                        <span className="font-semibold">{lbWards.reduce((acc, curr) => acc + (curr.male_voters || 0), 0).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-xs text-slate-600">
+                                        <span className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                                            Female
+                                        </span>
+                                        <span className="font-semibold">{lbWards.reduce((acc, curr) => acc + (curr.female_voters || 0), 0).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between items-center text-xs text-slate-600">
+                                        <span className="flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                                            Others
+                                        </span>
+                                        <span className="font-semibold">{lbWards.reduce((acc, curr) => acc + (curr.other_voters || 0), 0).toLocaleString()}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+                        {/* Polling Stations Card */}
                         <div className="p-3 md:p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-                                <div className="hidden md:block p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                            <div className="flex items-center gap-3 md:gap-4 h-full">
+                                <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl shrink-0">
                                     <MapPin size={24} />
                                 </div>
                                 <div>
@@ -89,9 +125,10 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({ localBody, onBack, war
                             </div>
                         </div>
 
+                        {/* Wards Card */}
                         <div className="p-3 md:p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-                                <div className="hidden md:block p-3 bg-amber-50 text-amber-600 rounded-xl">
+                            <div className="flex items-center gap-3 md:gap-4 h-full">
+                                <div className="p-3 bg-amber-50 text-amber-600 rounded-xl shrink-0">
                                     <Building2 size={24} />
                                 </div>
                                 <div>
