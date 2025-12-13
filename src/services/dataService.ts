@@ -255,7 +255,7 @@ export const fetchTrendResults = async (): Promise<TrendResult[]> => {
                     });
 
                     // Finalize counts and determine winners based on VOTES
-                    lbMap.forEach((trend, lbCode) => {
+                    lbMap.forEach((trend, _lbCode) => {
                         let calculatedWardsDeclared = 0;
 
                         Object.values(trend.wardInfo).forEach(ward => {
