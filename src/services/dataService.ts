@@ -248,26 +248,37 @@ export const fetchTrendResults = async (): Promise<TrendResult[]> => {
 
                         trend.wardInfo[wardNo].candidates.push(candidate);
 
-                        if (status === 'won') {
-                            declaredWardsMap.get(lbCode)!.add(wardNo);
-                            trend.wardInfo[wardNo].winner = candidate;
-
-                            if (group === 'LDF') trend.LDF_Seats++;
-                            else if (group === 'UDF') trend.UDF_Seats++;
-                            else if (group === 'NDA') trend.NDA_Seats++;
-                            else trend.IND_Seats++;
-                        } else if (status === 'leading') {
+                        // Winner and seats will be calculated after sorting
+                        if (status === 'leading') {
                             trend.wardInfo[wardNo].leading = candidate;
                         }
                     });
 
+                    // Finalize counts and determine winners based on VOTES
                     lbMap.forEach((trend, lbCode) => {
-                        if (declaredWardsMap.has(lbCode)) {
-                            trend.Wards_Declared = declaredWardsMap.get(lbCode)!.size;
-                        }
+                        let calculatedWardsDeclared = 0;
+
                         Object.values(trend.wardInfo).forEach(ward => {
+                            // Sort candidates by votes (descending)
                             ward.candidates.sort((a, b) => b.votes - a.votes);
+
+                            // Find the true winner: Highest voted candidate with status 'won'
+                            const trueWinner = ward.candidates.find(c => c.status && c.status.toLowerCase() === 'won');
+                            
+                            if (trueWinner) {
+                                ward.winner = trueWinner;
+                                calculatedWardsDeclared++;
+
+                                const group = trueWinner.group;
+                                if (group === 'LDF') trend.LDF_Seats++;
+                                else if (group === 'UDF') trend.UDF_Seats++;
+                                else if (group === 'NDA') trend.NDA_Seats++;
+                                else trend.IND_Seats++;
+                            }
+                            // Leading logic is implicit or handled by UI if no winner
                         });
+
+                        trend.Wards_Declared = calculatedWardsDeclared;
                     });
 
                     const aggregatedTrends = Array.from(lbMap.values()).map(trend => {
