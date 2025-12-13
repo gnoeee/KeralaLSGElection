@@ -247,6 +247,7 @@ export const fetchTrendResults = async (): Promise<TrendResult[]> => {
                         };
 
                         trend.wardInfo[wardNo].candidates.push(candidate);
+                        trend.Candidate_Count++;
 
                         // Winner and seats will be calculated after sorting
                         if (status === 'leading') {
@@ -264,7 +265,7 @@ export const fetchTrendResults = async (): Promise<TrendResult[]> => {
 
                             // Find the true winner: Highest voted candidate with status 'won'
                             const trueWinner = ward.candidates.find(c => c.status && c.status.toLowerCase() === 'won');
-                            
+
                             if (trueWinner) {
                                 ward.winner = trueWinner;
                                 calculatedWardsDeclared++;
