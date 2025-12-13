@@ -163,8 +163,10 @@ export const fetchTrendResults = async (): Promise<TrendResult[]> => {
         console.warn("Failed to load party groups, defaulting to empty map", e);
     }
 
-    const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
-    const url = `${baseUrl}data/csv/trend_detailed_results_2025.csv`;
+    // const baseUrl = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+    // const url = `${baseUrl}data/csv/trend_detailed_results_2025.csv`;
+    // data gets updated independently
+  const url = "https://raw.githubusercontent.com/opendatakerala/LSGD2025-Results-Data/refs/heads/main/trend_detailed_results_2025.csv";
 
     try {
         const response = await fetch(url);
